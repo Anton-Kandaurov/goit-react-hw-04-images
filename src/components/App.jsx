@@ -1,109 +1,193 @@
 import { PixabayAPI } from './PixabayApi/PixabayApi';
-import { Component } from 'react';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Loader } from './Loader/Loader';
 import { Button } from './Button/Button';
 import { Modal } from './Modal/Modal';
+import { useEffect, useState } from 'react';
 
 const pixabayApi = new PixabayAPI();
 
-export class App extends Component {
-  state = {
-    cards: [],
-    loading: false,
-    searchQuery: '',
-    page: 1,
-    showModal: false,
-    forModalLink: '',
-  };
 
-  async componentDidUpdate(_, prevState) {
-    if (prevState.searchQuery !== this.state.searchQuery) {
-      this.setState({ loading: true, cards: [] });
-      pixabayApi.page = this.state.page;
-      pixabayApi.q = this.state.searchQuery;
 
+export function App() {
+  const [cards, setCards] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [page, setPage] = useState(1);
+  const [showModal, setShowModal] = useState(false);
+  const [forModalLink, setForModalLink] = useState('');
+  const [isCardsShow, setIsCardsShow] = useState(false);
+
+  useEffect(() => {
+    if (!isCardsShow) {
+      return;
+    }
+
+    async function getData() {
       try {
-        const { data } = await pixabayApi.fetchPhotos();
+        const { data } = await pixabayApi.fetchPhotos(page, searchQuery);
         if (data.total === 0) {
           alert(
             'Sorry, there are no images matching your search query. Please try again.'
           );
           return;
         }
-
         const newCards = data.hits;
-
-        this.setState({
-          cards: newCards,
-        });
+        setCards(prevState => [...prevState, ...newCards]);
       } catch (error) {
         console.log(error);
-        alert('Something went wrong. Please try again.');
+        alert('Something went wrong.');
       } finally {
-        this.setState({ loading: false });
+        setLoading(false);
       }
+    }
+
+    getData();
+  }, [isCardsShow, page, searchQuery]);
+
+  const addPage = () => {
+    setLoading(true);
+    setPage(prevState => prevState + 1);
+  };
+
+  const showModalWindow = link => {
+    setForModalLink(link);
+    toggleModal();
+  };
+
+  const toggleModal = () => {
+    setShowModal(showModal => (showModal = !showModal));
+  };
+
+  const handleFormSubmit = searchText => {
+    if (searchText === searchQuery) {
+      alert('Please enter new data for search');
       return;
     }
-
-    if (prevState.page !== this.state.page) {
-      this.setState({ loading: true });
-      pixabayApi.page = this.state.page;
-      try {
-        const { data } = await pixabayApi.fetchPhotos();
-        const newCards = data.hits;
-        this.setState(({ cards }) => ({
-          cards: [...cards, ...newCards],
-        }));
-      } catch (error) {
-        console.log(error);
-        alert('Something went wrong. Please try again.');
-      } finally {
-        this.setState({ loading: false });
-      }
-    }
-  }
-
-  addPage = () => {
-    this.setState(prevState => ({
-      page: prevState.page + 1,
-    }));
+    setLoading(true);
+    setPage(1);
+    setSearchQuery(searchText);
+    setCards([]);
+    setIsCardsShow(true);
   };
 
-  showModal = link => {
-    this.setState({
-      forModalLink: link,
-    });
-    this.toggleModal();
-  };
-
-  toggleModal = () => {
-    this.setState(({ showModal }) => ({ showModal: !showModal }));
-  };
-
-  handleFormSubmit = searchText => {
-    this.setState({ searchQuery: searchText, page: 1 });
-  };
-
-  render() {
-    const { loading, cards, showModal, forModalLink } = this.state;
-    return (
-      <>
-        <Searchbar onSubmit={this.handleFormSubmit} />
-        {cards.length !== 0 && (
-          <ImageGallery imagesArray={cards} showModal={this.showModal} />
-        )}
-        {loading && <Loader />}
-        {cards.length !== 0 && !loading && (
-          <Button handleClick={this.addPage}></Button>
-        )}
-        {showModal && (
-          <Modal handleClose={this.toggleModal}>
-            <img src={forModalLink} alt="" />
-          </Modal>
-        )}
-      </>
-    );
-  }
+  return (
+    <>
+      <Searchbar onSubmit={handleFormSubmit} />
+      {cards.length !== 0 && (
+        <ImageGallery imagesArray={cards} showModal={showModalWindow} />
+      )}
+      {loading && <Loader />}
+      {cards.length !== 0 && !loading && (
+        <Button handleClick={addPage}></Button>
+      )}
+      {showModal && (
+        <Modal handleClose={toggleModal}>
+          <img src={forModalLink} alt="" />
+        </Modal>
+      )}
+    </>
+  );
 }
+
+
+// export class App extends Component {
+//   state = {
+//     cards: [],
+//     loading: false,
+//     searchQuery: '',
+//     page: 1,
+//     showModal: false,
+//     forModalLink: '',
+//   };
+
+//   async componentDidUpdate(_, prevState) {
+//     if (prevState.searchQuery !== this.state.searchQuery) {
+//       this.setState({ loading: true, cards: [] });
+//       pixabayApi.page = this.state.page;
+//       pixabayApi.q = this.state.searchQuery;
+
+//       try {
+//         const { data } = await pixabayApi.fetchPhotos();
+//         if (data.total === 0) {
+//           alert(
+//             'Sorry, there are no images matching your search query. Please try again.'
+//           );
+//           return;
+//         }
+
+//         const newCards = data.hits;
+
+//         this.setState({
+//           cards: newCards,
+//         });
+//       } catch (error) {
+//         console.log(error);
+//         alert('Something went wrong. Please try again.');
+//       } finally {
+//         this.setState({ loading: false });
+//       }
+//       return;
+//     }
+
+//     if (prevState.page !== this.state.page) {
+//       this.setState({ loading: true });
+//       pixabayApi.page = this.state.page;
+//       try {
+//         const { data } = await pixabayApi.fetchPhotos();
+//         const newCards = data.hits;
+//         this.setState(({ cards }) => ({
+//           cards: [...cards, ...newCards],
+//         }));
+//       } catch (error) {
+//         console.log(error);
+//         alert('Something went wrong. Please try again.');
+//       } finally {
+//         this.setState({ loading: false });
+//       }
+//     }
+//   }
+
+//   addPage = () => {
+//     this.setState(prevState => ({
+//       page: prevState.page + 1,
+//     }));
+//   };
+
+//   showModal = link => {
+//     this.setState({
+//       forModalLink: link,
+//     });
+//     this.toggleModal();
+//   };
+
+//   toggleModal = () => {
+//     this.setState(({ showModal }) => ({ showModal: !showModal }));
+//   };
+
+//   handleFormSubmit = searchText => {
+//     this.setState({ searchQuery: searchText, page: 1 });
+//   };
+
+//   render() {
+//     const { loading, cards, showModal, forModalLink } = this.state;
+//     return (
+//       <>
+//         <Searchbar onSubmit={this.handleFormSubmit} />
+//         {cards.length !== 0 && (
+//           <ImageGallery imagesArray={cards} showModal={this.showModal} />
+//         )}
+//         {loading && <Loader />}
+//         {cards.length !== 0 && !loading && (
+//           <Button handleClick={this.addPage}></Button>
+//         )}
+//         {showModal && (
+//           <Modal handleClose={this.toggleModal}>
+//             <img src={forModalLink} alt="" />
+//           </Modal>
+//         )}
+//       </>
+//     );
+//   }
+// }

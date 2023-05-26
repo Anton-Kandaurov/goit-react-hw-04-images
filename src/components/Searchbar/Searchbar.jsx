@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-import { Component } from 'react';
 import {
   SearchbarTop,
   Search,
@@ -7,29 +6,27 @@ import {
   SearchButton,
   SearchButtonLabel,
 } from './styled';
+import { useState } from 'react';
 
-export class Searchbar extends Component {
-  state = {
-    searchText: '',
+export function Searchbar({ onSubmit }) {
+  const [searchText, setSearchText] = useState('');
+
+  const handleChange = e => {
+    setSearchText(e.currentTarget.value);
   };
 
-  handleChange = e => {
-    this.setState({ searchText: e.currentTarget.value });
-  };
-
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
-    if (this.state.searchText.trim() === '') {
+    if (searchText.trim() === '') {
       alert('Enter data for search');
       return;
     }
-    this.props.onSubmit(this.state.searchText);
+    onSubmit(searchText);
   };
 
-  render() {
-    return (
-      <SearchbarTop>
-        <Search onSubmit={this.handleSubmit}>
+  return (
+    <SearchbarTop>
+        <Search onSubmit={handleSubmit}>
           <SearchButton type="submit">
             <SearchButtonLabel>Search</SearchButtonLabel>
           </SearchButton>
@@ -39,15 +36,55 @@ export class Searchbar extends Component {
             autoComplete="off"
             autoFocus
             placeholder="Search images and photos"
-            value={this.state.text}
-            onChange={this.handleChange}
+            value={searchText}
+            onChange={handleChange}
           />
         </Search>
       </SearchbarTop>
-    );
-  }
+  );
 }
 
 Searchbar.propTypes = {
   onSubmit: PropTypes.func.isRequired,
 };
+// export class Searchbar extends Component {
+//   state = {
+//     searchText: '',
+//   };
+
+//   handleChange = e => {
+//     this.setState({ searchText: e.currentTarget.value });
+//   };
+
+//   handleSubmit = e => {
+//     e.preventDefault();
+//     if (this.state.searchText.trim() === '') {
+//       alert('Enter data for search');
+//       return;
+//     }
+//     this.props.onSubmit(this.state.searchText);
+//   };
+
+//   render() {
+//     return (
+      // <SearchbarTop>
+      //   <Search onSubmit={this.handleSubmit}>
+      //     <SearchButton type="submit">
+      //       <SearchButtonLabel>Search</SearchButtonLabel>
+      //     </SearchButton>
+
+      //     <SearchInput
+      //       type="text"
+      //       autoComplete="off"
+      //       autoFocus
+      //       placeholder="Search images and photos"
+      //       value={this.state.text}
+      //       onChange={this.handleChange}
+      //     />
+      //   </Search>
+      // </SearchbarTop>
+//     );
+//   }
+// }
+
+
