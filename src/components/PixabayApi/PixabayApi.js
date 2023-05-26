@@ -8,6 +8,7 @@ export class PixabayAPI {
   per_page = 12;
   q = null;
 
+  
   async fetchPhotos() {
     try {
       return await axios.get(`${this.#BASE_URL}`, {
