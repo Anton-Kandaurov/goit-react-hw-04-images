@@ -1,11 +1,5 @@
 import PropTypes from 'prop-types';
-import {
-  SearchbarTop,
-  Search,
-  SearchInput,
-  SearchButton,
-  SearchButtonLabel,
-} from './styled';
+import { SearchbarTop, Search, SearchInput, SearchButton, SearchButtonLabel, } from './styled';
 import { useState } from 'react';
 
 export function Searchbar({ onSubmit }) {

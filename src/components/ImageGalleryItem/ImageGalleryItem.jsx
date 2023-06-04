@@ -19,6 +19,7 @@ export const ImageGalleryItem = ({
   );
 };
 
+
 ImageGalleryItem.propTypes = {
   id: PropTypes.number.isRequired,
   webformatURL: PropTypes.string.isRequired,

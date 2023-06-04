@@ -9,6 +9,7 @@ export class PixabayAPI {
   q = null;
 
   
+  
   async fetchPhotos() {
     try {
       return await axios.get(`${this.#BASE_URL}`, {

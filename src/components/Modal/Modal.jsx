@@ -21,6 +21,7 @@ export function Modal({ children, handleClose }) {
     };
   }, [handleClose]);
 
+  
   const handleBackdropClick = e => {
     if (e.currentTarget === e.target) {
       handleClose();

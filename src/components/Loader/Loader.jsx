@@ -15,4 +15,5 @@ export const Loader = () => {
       />
     </LoaderWrapper>
   );
+  
 };
