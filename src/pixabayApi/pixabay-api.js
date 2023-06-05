@@ -1,15 +1,12 @@
 import axios from 'axios';
 
-// const BASE_URL = 'https://pixabay.com/api/';
-// const API_KEY = '34744066-258cb09888b79ff1454a5a6f0';
-
 export class PixabayAPI {
   #BASE_URL = 'https://pixabay.com/api/';
-  #API_KEY = '34744066-258cb09888b79ff1454a5a6f0';
+  #API_KEY = '37015191-a044c7542fd02fb82cb266545';
 
-  page = 1;
+  //page = 1;
   per_page = 12;
-  q = null;
+  //q = null;
 
   async fetchPhotos(page, searchQuery) {
     try {
