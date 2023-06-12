@@ -10,10 +10,12 @@ export const ModalOverlay = styled.div`
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.8);
-  z-index: 2;
+  z-index: 1200;
 `;
 
 export const ModalContent = styled.div`
-  max-width: calc(100vw - 48px);
-  max-height: calc(100vh - 24px);
+ top: 50%;
+  left: 50%;
+  width: 100%;
+  max-width: 950px;
 `;

@@ -4,7 +4,7 @@ import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Loader } from './Loader/Loader';
 import { Button } from './Button/Button';
-import { Modal } from './Modal/Modal';
+import  Modal  from './Modal/Modal';
 
 const pixabayApi = new PixabayAPI();
 
@@ -70,6 +70,10 @@ export function App() {
     setIsCardsShow(true);
   };
 
+  const closeModal = () => {
+    setShowModal(null);
+  };
+
   return (
     <>
       <Searchbar onSubmit={handleFormSubmit} />
@@ -81,7 +85,7 @@ export function App() {
         <Button handleClick={addPage}></Button>
       )}
       {showModal && (
-        <Modal handleClose={toggleModal}>
+        <Modal closeModal={closeModal}>
           <img src={forModalLink} alt="" />
         </Modal>
       )}
